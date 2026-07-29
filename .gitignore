@@ -1,0 +1,21 @@
+# Raw source documents (ICB policies) — kept local only, never redistributed
+data/raw/**/*.pdf
+data/raw/**/*.docx
+data/raw/**/*.doc
+
+# Pre-anonymisation extracted passages — may still contain staff names
+data/extracted/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.venv/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS cruft
+.DS_Store
+Thumbs.db

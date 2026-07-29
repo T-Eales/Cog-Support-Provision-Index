@@ -1,0 +1,103 @@
+# Seed keyword dictionary — one entry per index domain (see docs/scoring_rubric.md).
+#
+# This is a STARTING POINT drafted from the domain justifications, meant to be piloted on
+# 2-3 documents and refined (see docs/methodology.md > Keyword dictionary construction).
+# `keywords` are what extract_passages.py matches on (case-insensitive, word-stem aware via
+# the trailing `*`). `targeted_signals` are NOT matched automatically — they're notes for the
+# human coder on what tends to distinguish a score-3 "targeted intervention" passage from a
+# score-2 "generic provision" one.
+
+attention_regulation:
+  label: Attention Regulation (AR)
+  keywords:
+    - attention
+    - distractib*
+    - hyperfocus
+    - daydream*
+    - concentrat*
+    - focus strateg*
+    - attentional variability
+    - mindfulness
+  targeted_signals:
+    - names a specific structured programme (e.g. attention-training protocol, CBT-based
+      attention strategies) rather than a one-line signpost to "improve concentration"
+
+executive_functioning:
+  label: Executive Functioning (EF)
+  keywords:
+    - executive function*
+    - working memory
+    - planning
+    - organisation
+    - organization
+    - task initiation
+    - prioriti*
+    - time management
+    - coaching
+    - procrastinat*
+  targeted_signals:
+    - offers a named coaching/skills programme or structured EF intervention, not just generic
+      "tips" leaflets
+
+self_regulation:
+  label: Self-Regulation (SR)
+  keywords:
+    - emotional regulation
+    - emotion dysregulation
+    - DESR
+    - frustration tolerance
+    - mood
+    - emotional dysregulation
+    - anger management
+    - DBT
+    - dialectical behaviour*
+    - distress tolerance
+  targeted_signals:
+    - structured therapy referral pathway (e.g. DBT skills group) specifically for ADHD-linked
+      emotional dysregulation, vs a generic "manage your emotions" signpost
+
+everyday_functioning:
+  label: Everyday Functioning (EdF)
+  keywords:
+    - daily living
+    - financial management
+    - occupational
+    - employment support
+    - relationship
+    - independent living
+    - budgeting
+    - household management
+  targeted_signals:
+    - concrete functional-skills intervention (e.g. occupational therapy input, structured
+      independent-living skills programme) vs a vague mention of "impact on daily life"
+
+environmental_support:
+  label: Environmental Support (ES)
+  keywords:
+    - reasonable adjustment*
+    - workplace adjustment*
+    - assistive technology
+    - environmental modification*
+    - Equality Act
+    - Access to Work
+    - Disabled Students Allowance
+    - DSA
+    - accommodations
+  targeted_signals:
+    - practical guidance on obtaining specific adjustments/technology (e.g. referral to Access
+      to Work) vs a bare statement that "adjustments may be available"
+
+waitlist_support:
+  label: Wait-list Support (WLS)
+  keywords:
+    - waiting list
+    - wait time
+    - interim support
+    - bridging support
+    - pre-diagnosis
+    - while you wait
+    - peer support group
+    - waiting well
+  targeted_signals:
+    - a specific interim offer (e.g. structured "waiting well" programme, peer support group
+      with named referral route) vs a generic statement that waits "may be long"
