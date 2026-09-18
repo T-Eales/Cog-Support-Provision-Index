@@ -1,77 +1,106 @@
 # Methodology
 
-Expands the original research plan's Analysis Plan into an executable protocol. See the
-original plan for Research Aims, Research Question, and Hypotheses (H1/H2/H0) — reproduced
-here only where they inform a methodological decision.
+Expands the dissertation proposal's Method section into an executable protocol. See the proposal
+for full Background, Theory, Rationale, and Hypotheses — reproduced here only where they inform a
+methodological or implementation decision.
 
-## 1. Sampling frame
+## 1. Design
 
-Propose **8 ICBs total, 2 per area category**:
+A supervised computational validation design, comparing automated text classifiers against a
+human reference baseline, run in three phases:
 
-- 2 under-resourced
-- 2 better-resourced
-- 2 rural
-- 2 urban
+1. **Development** — build the human-annotated reference standard; train the baseline and
+   TF-IDF/logistic-regression models.
+2. **Calibration** — evaluate the trained models on a held-out set to fix each model's
+   confidence/abstention threshold.
+3. **Test** — frozen models classify the test set; results are compared to the human reference
+   standard.
 
-Categories are not mutually exclusive (an ICB can be, e.g., both rural and under-resourced) —
-record both classifications per ICB in `data/manifest.csv`.
+## 2. Document identification & inclusion criteria
 
-Classification criteria to fix before selection:
-- **Resourcing**: published ICB funding allocation per capita and/or adult ADHD service
-  staffing levels (source: NHS England ICB allocations, published board papers).
-- **Rurality**: ONS Rural-Urban Classification for the ICB's constituent local authorities
-  (majority-rural vs majority-urban).
+Materials are publicly accessible adult ADHD pathway documents: NHS trust service pages, regional
+ICB referral guidance, patient information leaflets, and commissioned third-sector provision
+frameworks. Target: 150–250 documents split across these four sources.
 
-This N is a starting proposal, not fixed by the original plan — revisit with your supervisor
-before Week 4 (see `docs/timeline.md`).
+**Inclusion**: publicly accessible, currently active, and specifically detailing adult ADHD
+diagnostic or support pathways in an English Integrated Care Board (ICB).
 
-## 2. Document identification procedure
+**Exclusion**: paediatric ADHD pathways; general ADHD material with no regional service detail;
+private-sector documentation outside the Right to Choose scheme.
 
-Per ICB, systematically search and log in `data/manifest.csv`:
-1. ICB website commissioning/policies section
-2. Named ADHD service provider website(s) commissioned by that ICB
-3. Any publicly available shared-care protocol or service specification (FOI disclosure logs
-   are a fallback if not otherwise published)
+Retrieval (`scripts/`) uses BeautifulSoup and DuckDuckGo search (e.g. `Adult ADHD pathway
+site:nhs.uk`, `Adult ADHD service specification CMHT NHS`) and:
 
-For every candidate document, record in the manifest: ICB name, area type(s), document title,
-source URL, publication/last-reviewed date, and an include/exclude decision with a one-line
-reason against the original plan's inclusion/exclusion criteria (e.g. "excluded — CAMHS
-pathway," "excluded — pre-2020, no evidence of current use").
+- checks each site's `robots.txt` before requesting a page,
+- rate-limits requests (3s between calls) to avoid loading public NHS/third-sector servers,
+- logs source authors, URL, publication date, and document type per document in
+  `data/manifest.csv`, for an auditable evidence trail (Gebru et al., 2021).
 
-## 3. Keyword dictionary construction
+## 3. Passage extraction & filtering
 
-`dictionary/keywords.yaml` is seeded from the domain justifications in the original plan.
-Before full-scale extraction:
-1. Run `scripts/extract_passages.py` on 2–3 pilot documents.
-2. Manually review the candidate passages for false positives/negatives per domain.
-3. Revise the keyword list accordingly and record what changed and why (a short changelog at
-   the top of `keywords.yaml` is sufficient) — this transparency is part of what makes the
-   retrieval step auditable rather than a black box.
+Extracted raw text is split into paragraph-length passages and filtered for ADHD keywords
+(`dictionary/keywords.yaml`), expected to yield 500–750 candidate passages. Passages are split at
+the **provider level** — not the passage level — into development (~290), calibration (~85), and
+test (~125) sets, so no single provider's passages leak across sets.
 
-## 4. Coding & reliability procedure
+## 4. Coding rubric & reliability procedure
 
-- One primary coder scores every candidate passage against `docs/scoring_rubric.md`.
-- A second coder independently double-codes a **20% random subsample** of passages (stratified
-  across the 4 area types so no category is left unchecked).
-- `scripts/reliability.py` computes **weighted Cohen's kappa** (appropriate here because the
-  0–3 rubric is ordinal, not nominal) between the two coders on that subsample.
-- Disagreements of more than 1 rubric point are resolved by discussion between coders; if
-  unresolved, a third rater (e.g. supervisor) breaks the tie. Log resolutions in the coding
-  sheet's notes column.
+Passages are coded against [`docs/scoring_rubric.md`](scoring_rubric.md), an operationalisation of
+Brown's (2013) model (ATT, PER, ESR, WM) and a 4-level provision scale (No Support / Signposting /
+General Support / Targeted Support).
 
-## 5. Statistical analysis, mapped to hypotheses
+- The primary researcher and one independent rater (background in research methods, trained on
+  the rubric) code independently, blind to each other's decisions and to all model outputs.
+- **Stage 1**: both code a development subsample (~95 passages), then meet to discuss
+  disagreements.
+- **Stage 2**: the rater independently codes the full test set (~125 passages) plus a third of
+  the development set — strictly blind, with no visibility into the primary researcher's codes
+  or any model output.
+- **Stage 3**: disagreements between the two are reconciled into a single consensus standard.
+- **Cohen's Kappa** is used for the binary "is a deficit mentioned" judgement; **Cohen's Weighted
+  Kappa** for agreement across the ordinal provision levels.
 
-| Hypothesis | Test | Rationale |
-|---|---|---|
-| H1: better-resourced areas offer more targeted interventions | Mann-Whitney U comparing domain scores, better-resourced vs under-resourced ICBs | Ordinal outcome, small independent-groups N → non-parametric |
-| H2: rural areas provide a wider variety of non-pharmacological treatment | Count of domains scoring ≥2 per ICB; compare rural vs urban distributions (Mann-Whitney U) | "Variety" operationalised as breadth of domains reaching at least generic provision |
-| H0: all areas lack support in ≥2 domains | Proportion of the 8 sampled ICBs with ≥2 domains scoring 0–1, reported descriptively | Directly matches the stated null — no inferential test needed, just the proportion |
+## 5. Models
 
-`scripts/analyse.py` implements all three and exports summary tables/figures.
+Three classifiers, all trained on the development set:
 
-## 6. Limitations (carried from the original plan)
+1. **Keyword/context-rule baseline** — transparent and rule-based, using
+   `dictionary/keywords.yaml`.
+2. **Regularised logistic regression over TF-IDF features.**
+3. **Dense sentence embeddings** (Sentence-BERT-style) — captures semantic similarity rather
+   than surface keyword matching, so it can generalise across public-facing vs clinical phrasing
+   of the same construct (e.g. "help with organisation and planning" vs "working memory").
 
-The unit of analysis is the **commissioned pathway**, not lived patient experience or clinical
-delivery — documented policy may not reflect practice. This is an accepted scientific
-limitation of a document-based design (Ethical Consideration #3), not something the analysis
-can correct for; it should be stated explicitly in the discussion.
+## 6. Calibration & thresholds
+
+Because model confidence scores don't reliably track accuracy (Guo et al., 2017), each model is
+evaluated on the calibration partition to fix an abstention threshold: classifications below
+threshold are routed to human review rather than accepted automatically. Once thresholds are set,
+the models, coding rubric, and keyword dictionary are frozen (Kapoor & Narayanan, 2023) before the
+test set is touched.
+
+## 7. Evaluation
+
+- **H1** (the supervised model significantly outperforms the keyword baseline) is tested with
+  McNemar's test on paired classification outcomes.
+- Precision, recall, and macro-F1 are reported per category and overall, alongside confusion
+  matrices against the human reference standard.
+- A structured, descriptive qualitative error analysis is performed on misclassified passages.
+- Success criterion: the best-performing model reaches **≥90% precision** on the **≥50%** of test
+  passages it classifies above its confidence threshold.
+
+## 8. Limitations (carried from the proposal)
+
+- Documented provision is not the same as clinical practice — a service may deliver support
+  that's absent from its published specification, or publish a specification it cannot sustain
+  (Magon et al., 2015).
+- Providers with more administrative capacity tend to publish more detailed documentation, so
+  detection may correlate with resourcing rather than actual provision quality.
+- The primary researcher is not blind to the study's aims; dual coding mitigates but does not
+  remove this bias (O'Connor & Joffe, 2020).
+- Category imbalance may depress macro-F1 and destabilise kappa for rarer categories (McHugh,
+  2012; Sokolova & Lapalme, 2009).
+- Mapping administrative language onto psychological constructs (e.g. "help with organisation
+  and planning" → working memory) is interpretive, not exact (Flake & Fried, 2020).
+- Findings generalise only to English NHS/third-sector provision — ADHD services are commissioned
+  differently elsewhere in the UK.

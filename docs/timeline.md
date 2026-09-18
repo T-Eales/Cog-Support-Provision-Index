@@ -1,23 +1,52 @@
 # Timeline
 
-Dated against a submission target of **1 February 2027**, starting from **29 July 2026**
-(~27 weeks).
+Project timeline as agreed in the dissertation proposal, submission target **08/03/27**.
 
-| Weeks | Dates | Milestone |
-|---|---|---|
-| 1–3 | 29 Jul – 18 Aug 2026 | Finalise protocol, submit ethics application, build repo scaffold + keyword dictionary v1 |
-| 4–6 | 19 Aug – 8 Sep 2026 | Ethics approval wait / ICB selection & categorisation, populate `data/manifest.csv` |
-| 7–9 | 9 Sep – 29 Sep 2026 | Pilot extraction on 2–3 documents, refine dictionary & rubric anchors |
-| 10–14 | 30 Sep – 3 Nov 2026 | Full document collection & extraction run, all 8 ICBs |
-| 15–18 | 4 Nov – 1 Dec 2026 | Human coding: reliability subsample double-coded + remainder single-coded |
-| 19–20 | 2 Dec – 15 Dec 2026 | Reliability analysis (weighted kappa), resolve disagreements, freeze dataset |
-| 21–24 | 16 Dec 2026 – 12 Jan 2027 | Statistical analysis (H1/H2/H0), results write-up |
-| 25–26 | 13 – 26 Jan 2027 | Discussion, limitations, full draft to supervisor |
-| 27 | 27 Jan – 1 Feb 2027 | Final revisions, formatting, submission |
+| Date | Milestone |
+|---|---|
+| 24/08/26 | User interface design |
+| 31/08/26 | Code Module 1: Python architecture |
+| 31/08/26 | Make necessary draft edits |
+| 07/09/26 | Submit research proposal and ethics application |
+| 14/09/26 | Start literature review |
+| 21/09/26 | Submit reflective activity |
+| 21/09/26 | Recruit independent coder |
+| 21/09/26 | Run data collection |
+| 28/09/26 | Manually review documents and separate |
+| 05/10/26 | Human code stage 1 |
+| 05/10/26 | Code Module 2: TF-IDF code |
+| 12/10/26 | Start Method section |
+| 19/10/26 | Code Module 3: Embeddings code |
+| 26/10/26 | Continue Method section |
+| 02/11/26 | Finish literature review |
+| 09/11/26 | Finish Method section |
+| 16/11/26 | Debug current code |
+| 23/11/26 | Human code stage 2 |
+| 30/11/26 | Human code stage 3 |
+| 07/12/26 | Code Module 4: Training dataset |
+| 14/12/26 | Code Module 4: Training dataset (cont.) |
+| 21/12/26 | Christmas |
+| 28/12/26 | Code Module 5: Calibration |
+| 04/01/27 | Code Module 6: Model test |
+| 04/01/27 | Start Results section |
+| 11/01/27 | Qualitative error analysis |
+| 11/01/27 | Code Module 7: Confusion matrices |
+| 11/01/27 | Finish Results section |
+| 18/01/27 | Finish Results section (cont.) |
+| 25/01/27 | Draft project submission |
+| 01/02/27 | Write Discussion |
+| 08/02/27 | Continue Discussion |
+| 15/02/27 | Finish Discussion |
+| 22/02/27 | Edits |
+| 01/03/27 | Proofread |
+| 08/03/27 | Final submission |
 
 ## Risk
 
-Ethics approval turnaround time is the one external dependency with unknown timing. Weeks 4–6
-may need to compress or expand once the actual approval date is confirmed — if approval lands
-later than Week 6, the most compressible downstream phase is 21–24 (analysis/write-up), not
-data collection or coding, since those need real time regardless of deadline pressure.
+Ethics approval (University of Essex Online Ethical Approval Group) must be granted before any
+data collection begins; data collection is scheduled for 21/09/26, so approval turnaround is the
+main external dependency on this timeline.
+
+The independent rater's Stage 2 coding (blind, ~125 test passages plus a third of the development
+set) and Stage 3 consensus reconciliation both have a hard deadline of 07/12/26 under their
+participant agreement — see `docs/methodology.md` §4.

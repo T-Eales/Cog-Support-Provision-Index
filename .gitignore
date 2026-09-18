@@ -1,10 +1,19 @@
-# Raw source documents (ICB policies) — kept local only, never redistributed
-data/raw/**/*.pdf
-data/raw/**/*.docx
-data/raw/**/*.doc
-
-# Pre-anonymisation extracted passages — may still contain staff names
+# Corpus / scraped documents / coded output — NEVER committed. These directories exist as
+# empty scaffolding only; every file inside them (raw scrapes, extracted passages, coded
+# annotations) stays local to the researcher's machine.
+data/raw/**
+!data/raw/**/
+!data/raw/**/.gitkeep
 data/extracted/
+data/coded/**
+!data/coded/**/
+!data/coded/**/.gitkeep
+
+# Any corpus/export CSV or spreadsheet anywhere in the repo, except the (empty) manifest
+# template itself.
+*.csv
+!data/manifest.csv
+*.xlsx
 
 # Python
 __pycache__/
